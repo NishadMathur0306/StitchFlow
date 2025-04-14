@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Photo Stitcher</title>
+</head>
+<body>
+    <h1>AI Photo Stitching App</h1>
+
+    <!-- STITCHING SECTION -->
+    <h2>Stitch Images</h2>
+    <form action="/stitch/" enctype="multipart/form-data" method="post">
+        <label>Description:</label><br>
+        <input type="text" name="description" placeholder="Describe how the image should be stitched" required><br><br>
+
+        <label>Select images (files or folder):</label><br>
+        <input type="file" name="files" multiple webkitdirectory directory><br><br>
+
+        <input type="submit" value="Stitch">
+    </form>
+
+    {% if message %}
+        <p style="color: green;"><strong>{{ message }}</strong></p>
+    {% endif %}
+
+    {% if stitched_images %}
+        <h3>Stitched Outputs:</h3>
+        {% for img in stitched_images %}
+            <div style="margin-bottom: 20px;">
+                <img src="{{ img }}" style="max-width: 800px; border: 2px solid #ccc;" alt="Stitched Result"><br>
+                <a href="{{ img }}" download>Download Image</a>
+            </div>
+        {% endfor %}
+        <a href="/export-pdf"><button>Download All as PDF</button></a>
+    {% endif %}
+
+    <hr>
+
+    <!-- SORTING SECTION -->
+    <h2>Sort Images</h2>
+    <form action="/sort/" enctype="multipart/form-data" method="post" onsubmit="return getFolderPaths()">
+        <label>Select folder to sort:</label><br>
+        <input type="file" name="folder" webkitdirectory directory required><br><br>
+
+        <!-- Hidden fields populated by JS -->
+        <input type="hidden" name="good_folder" id="good_folder">
+        <input type="hidden" name="bad_folder" id="bad_folder">
+
+        <input type="submit" value="Sort">
+    </form>
+
+    <script>
+        function getFolderPaths() {
+            const good = prompt("Enter the path for GOOD images:");
+            const bad = prompt("Enter the path for BAD images:");
+            if (!good || !bad) {
+                alert("You must enter paths for both good and bad folders.");
+                return false;
+            }
+            document.getElementById("good_folder").value = good;
+            document.getElementById("bad_folder").value = bad;
+            return true;
+        }
+    </script>
+</body>
+</html>
